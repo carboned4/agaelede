@@ -91,14 +91,22 @@ function typeSearch(child){
 	}
 	else if (tempName == "xsd:complexType"){
 		console.log(child.attributes.name)
-		dataTypes[child.attributes.name.nodeValue] = [];
+		var tempChildren = child.children;
+		var tempArray = [];
+		for (ichildren in tempChildren){
+			var ic = typeSearch(tempChildren[ichildren]);
+			if (ic){
+				tempArray.push(ic);
+			}
+		}
+		dataTypes[child.attributes.name.nodeValue] = tempArray;
 	}
 	else if (tempName == "xsd:simpleType"){
 		console.log(child.attributes.name)
 	}
 	else if (tempName == "xsd:element"){
 		return {name: child.attributes.name.nodeValue, 
-				type: child.attributes.type.nodeValue,
+				type: child.attributes.type ? child.attributes.type.nodeValue : null,
 				minOccurs: child.attributes.minOccurs ? child.attributes.minOccurs.nodeValue : null,
 				maxOccurs: child.attributes.maxOccurs ? child.attributes.maxOccurs.nodeValue : null
 			};
