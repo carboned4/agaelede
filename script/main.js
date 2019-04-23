@@ -99,17 +99,33 @@ function typeSearch(child){
 				tempArray.push(ic);
 			}
 		}
-		dataTypes[child.attributes.name.nodeValue] = tempArray;
+		if (child.attributes.name){
+			dataTypes[child.attributes.name.nodeValue] = tempArray;
+		} else {
+			return tempArray;
+		}
 	}
 	else if (tempName == "xsd:simpleType"){
 		console.log(child.attributes.name)
 	}
 	else if (tempName == "xsd:element"){
-		return {name: child.attributes.name.nodeValue, 
-				type: child.attributes.type ? child.attributes.type.nodeValue : null,
+		if (child.attributes.type){
+			return {name: child.attributes.name.nodeValue, 
+				type: child.attributes.type.nodeValue,
 				minOccurs: child.attributes.minOccurs ? child.attributes.minOccurs.nodeValue : null,
 				maxOccurs: child.attributes.maxOccurs ? child.attributes.maxOccurs.nodeValue : null
 			};
+		} else {
+			var tempChildren = child.children;
+			var tempArray = [];
+			for (ichildren in tempChildren){
+				var ic = typeSearch(tempChildren[ichildren]);
+				if (ic){
+					tempArray.push(ic);
+				}
+			}
+			return tempArray;
+		}
 	}
 	else if (tempName == "xsd:schema"){
 		console.log("schema")
