@@ -106,7 +106,12 @@ function typeSearch(child){
 		}
 	}
 	else if (tempName == "xsd:simpleType"){
-		console.log(child.attributes.name)
+		console.log(child.attributes.name);
+		var tempRestriction = filterTag(child.children,"xsd:restriction")[0];
+		console.log(tempRestriction.attributes.base.nodeValue);
+		return {//name: child.attributes.name.nodeValue, 
+				type: tempRestriction.attributes.base.nodeValue
+			};
 	}
 	else if (tempName == "xsd:element"){
 		if (child.attributes.type){
