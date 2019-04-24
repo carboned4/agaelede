@@ -100,9 +100,9 @@ function typeSearch(child){
 			}
 		}
 		if (child.attributes.name){
-			dataTypes[child.attributes.name.nodeValue] = tempArray;
+			dataTypes[child.attributes.name.nodeValue] = tempArray[0];
 		} else {
-			return {tempArray};
+			return {structure: tempArray[0]};
 		}
 	}
 	else if (tempName == "xsd:simpleType"){
