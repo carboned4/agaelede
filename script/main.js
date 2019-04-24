@@ -102,7 +102,7 @@ function typeSearch(child){
 		if (child.attributes.name){
 			dataTypes[child.attributes.name.nodeValue] = tempArray;
 		} else {
-			return tempArray;
+			return {tempArray};
 		}
 	}
 	else if (tempName == "xsd:simpleType"){
@@ -122,14 +122,18 @@ function typeSearch(child){
 			};
 		} else {
 			var tempChildren = child.children;
-			var tempArray = [];
+			var tempChildType = filter(tempChildren,function(d){return d.nodeName == "xsd:simpleType" || d.nodeName == "xsd:complexType"})[0];
+			/* var tempArray = [];
 			for (ichildren in tempChildren){
 				var ic = typeSearch(tempChildren[ichildren]);
 				if (ic){
 					tempArray.push(ic);
 				}
-			}
-			return tempArray;
+			} */
+			//if (tempChildType[0].nodeName == "xsd:simpleType")
+			var tempChildSearchResult = typeSearch(tempChildType);
+			tempChildSearchResult.name = child.attributes.name.nodeValue;
+			return tempChildSearchResult;
 		}
 	}
 	else if (tempName == "xsd:schema"){
