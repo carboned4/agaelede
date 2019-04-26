@@ -72,17 +72,17 @@ function process(xmltree){
 	console.log(dataTypes);
 }
 
-function typeSearch(child){
+function typeSearch(child,namespaces){
 	var tempName = child.nodeName;
-	console.log(tempName);
-	console.log(child);
+	//console.log(tempName);
+	//console.log(child);
 		
 	if (tempName == "xsd:sequence"){
-		console.log(child.attributes.name)
+		//console.log(child.attributes.name)
 		var tempChildren = child.children;
 		var tempArray = [];
 		for (ichildren in tempChildren){
-			var ic = typeSearch(tempChildren[ichildren]);
+			var ic = typeSearch(tempChildren[ichildren],namespaces);
 			if (ic){
 				tempArray.push(ic);
 			}
@@ -90,11 +90,11 @@ function typeSearch(child){
 		return tempArray;
 	}
 	else if (tempName == "xsd:complexType"){
-		console.log(child.attributes.name)
+		//console.log(child.attributes.name)
 		var tempChildren = child.children;
 		var tempArray = [];
 		for (ichildren in tempChildren){
-			var ic = typeSearch(tempChildren[ichildren]);
+			var ic = typeSearch(tempChildren[ichildren],namespaces);
 			if (ic){
 				tempArray.push(ic);
 			}
@@ -106,9 +106,9 @@ function typeSearch(child){
 		}
 	}
 	else if (tempName == "xsd:simpleType"){
-		console.log(child.attributes.name);
+		//console.log(child.attributes.name);
 		var tempRestriction = filterTag(child.children,"xsd:restriction")[0];
-		console.log(tempRestriction.attributes.base.nodeValue);
+		//console.log(tempRestriction.attributes.base.nodeValue);
 		return {//name: child.attributes.name.nodeValue, 
 				type: tempRestriction.attributes.base.nodeValue
 			};
@@ -131,18 +131,38 @@ function typeSearch(child){
 				}
 			} */
 			//if (tempChildType[0].nodeName == "xsd:simpleType")
-			var tempChildSearchResult = typeSearch(tempChildType);
+			var tempChildSearchResult = typeSearch(tempChildType,namespaces);
 			tempChildSearchResult.name = child.attributes.name.nodeValue;
 			return tempChildSearchResult;
 		}
 	}
 	else if (tempName == "xsd:schema"){
 		console.log("schema")
+		var fns = fetchNamespaces(child);
 		var tempChildren = child.children;
 		for (ichildren in tempChildren){
-			typeSearch(tempChildren[ichildren]);
+			typeSearch(tempChildren[ichildren],fns);
+		}
+		console.log(fns);
+	}
+}
+
+function fetchNamespaces(el){
+	var NSExternal = {};
+	var NSCurrent = "";
+	
+	for(at in el.attributes){
+		var tempAt = el.attributes[at];
+		var tempAtName = tempAt.name;
+		var tempAtValue = tempAt.nodeValue;
+		//console.log(tempAtName);
+		if (tempAtName && tempAtName.substring(0,6) == "xmlns:"){
+			NSExternal[tempAtName.substring(6)] = tempAtValue;
+		} else if (tempAtName == "xmlns"){
+			NSCurrent = tempAtValue;
 		}
 	}
+	return {current: NSCurrent, external: NSExternal};
 }
 
 function filterTag(array,tag){
