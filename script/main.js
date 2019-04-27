@@ -110,7 +110,8 @@ function typeSearch(child,namespaces){
 		var tempRestriction = filterTag(child.children,"xsd:restriction")[0];
 		//console.log(tempRestriction.attributes.base.nodeValue);
 		return {//name: child.attributes.name.nodeValue, 
-				type: tempRestriction.attributes.base.nodeValue
+				type: tempRestriction.attributes.base.nodeValue,
+				ns: namespaces.current
 			};
 	}
 	else if (tempName == "xsd:element"){
@@ -118,7 +119,8 @@ function typeSearch(child,namespaces){
 			return {name: child.attributes.name.nodeValue, 
 				type: child.attributes.type.nodeValue,
 				minOccurs: child.attributes.minOccurs ? child.attributes.minOccurs.nodeValue : null,
-				maxOccurs: child.attributes.maxOccurs ? child.attributes.maxOccurs.nodeValue : null
+				maxOccurs: child.attributes.maxOccurs ? child.attributes.maxOccurs.nodeValue : null,
+				ns: namespaces.current
 			};
 		} else {
 			var tempChildren = child.children;
