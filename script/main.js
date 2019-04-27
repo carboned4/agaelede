@@ -100,9 +100,9 @@ function typeSearch(child,namespaces){
 			}
 		}
 		if (child.attributes.name){
-			dataTypes[child.attributes.name.nodeValue] = tempArray[0];
+			dataTypes[namespaces.current][child.attributes.name.nodeValue] = tempArray[0];
 		} else {
-			return {structure: tempArray[0]};
+			return {structure: tempArray[0], ns: namespaces.current};
 		}
 	}
 	else if (tempName == "xsd:simpleType"){
@@ -133,6 +133,7 @@ function typeSearch(child,namespaces){
 			//if (tempChildType[0].nodeName == "xsd:simpleType")
 			var tempChildSearchResult = typeSearch(tempChildType,namespaces);
 			tempChildSearchResult.name = child.attributes.name.nodeValue;
+			
 			return tempChildSearchResult;
 		}
 	}
@@ -144,6 +145,17 @@ function typeSearch(child,namespaces){
 			typeSearch(tempChildren[ichildren],fns);
 		}
 		console.log(fns);
+	}
+}
+
+function splitType(typename){
+	var io = typename.indexOf(":");
+	if (typename.substring(0,4) == "xsd:"){
+		return typename;
+	}else if(io >= 0){
+		return typename.split(":");
+	}else{
+		return typename;
 	}
 }
 
@@ -160,6 +172,7 @@ function fetchNamespaces(el){
 			NSExternal[tempAtName.substring(6)] = tempAtValue;
 		} else if (tempAtName == "xmlns"){
 			NSCurrent = tempAtValue;
+			dataTypes[NSCurrent] = {};
 		}
 	}
 	return {current: NSCurrent, external: NSExternal};
