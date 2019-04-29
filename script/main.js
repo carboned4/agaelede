@@ -7,6 +7,8 @@ var elementTypes;
 var dataOperations = {};
 var dataMessages = {};
 var dataTypes = {};
+var dataElements = {};
+var dataNamespacesTop;
 
 function startup(){
 	console.log("lol");
@@ -31,6 +33,8 @@ function process(xmltree){
 	//elementOperations._groups[0].forEach(function(d){console.log(d.nodeName)})
 	//console.log(elementOperations);
 	
+	dataNamespacesTop = fetchNamespaces(elementDefinitions);
+	
 	for(iElOp in elementOperations){
 		var tempOpName = elementOperations[iElOp].attributes.name.nodeValue;
 		var tempOpInput = filterTag(elementOperations[iElOp].children,"wsdl:input")[0].attributes.message.nodeValue;
@@ -44,7 +48,7 @@ function process(xmltree){
 	console.log(dataOperations);
 	
 	elementMessages = filterTag(elementDefinitions.children,"wsdl:message");
-	console.log(elementMessages);
+	//console.log(elementMessages);
 	
 	for(iElMess in elementMessages){
 		var tempMessName = elementMessages[iElMess].attributes.name.nodeValue;
@@ -57,7 +61,7 @@ function process(xmltree){
 	console.log(dataMessages);
 	
 	elementTypes = filterTag(elementDefinitions.children,"wsdl:types");
-	console.log(elementTypes);
+	//console.log(elementTypes);
 	
 	for(iElType in elementTypes[0].children){
 		/*
@@ -70,6 +74,8 @@ function process(xmltree){
 		typeSearch(elementTypes[0].children[iElType]);
 	}
 	console.log(dataTypes);
+	
+	traverse();
 }
 
 function typeSearch(child,namespaces){
@@ -140,14 +146,29 @@ function typeSearch(child,namespaces){
 		}
 	}
 	else if (tempName == "xsd:schema"){
-		console.log("schema")
+		//console.log("schema")
 		var fns = fetchNamespaces(child);
+		dataElements[(fns.current)] = {};
 		var tempChildren = child.children;
 		for (ichildren in tempChildren){
-			typeSearch(tempChildren[ichildren],fns);
+			var ts = typeSearch(tempChildren[ichildren],fns);
+			if (tempChildren[ichildren].nodeName == "xsd:element"){
+				//console.log(ts);
+				dataElements[(fns.current)][(ts.name)] = {type: ts.type, ns: fns.current};
+			}
 		}
-		console.log(fns);
+		//console.log(fns);
 	}
+}
+
+function traverse(){
+	var htmleltables = document.getElementById("tables");
+	for (opi in dataOperations){
+		//htmleltables
+		var op = dataOperations[opi];
+		console.log(dataOperations[opi]);
+	}
+	
 }
 
 function splitType(typename){
