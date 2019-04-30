@@ -171,14 +171,14 @@ function traverse(){
 	
 }
 
-function splitType(typename){
+function splitType(typename,names){
 	var io = typename.indexOf(":");
 	if (typename.substring(0,4) == "xsd:"){
-		return typename;
+		return ["xsd",typename];
 	}else if(io >= 0){
 		return typename.split(":");
 	}else{
-		return typename;
+		return [names,typename];
 	}
 }
 
