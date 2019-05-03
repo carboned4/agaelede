@@ -76,6 +76,7 @@ function process(xmltree){
 	console.log(dataTypes);
 	
 	traverse();
+	draw();
 }
 
 function typeSearch(child,namespaces){
@@ -162,11 +163,36 @@ function typeSearch(child,namespaces){
 }
 
 function traverse(){
-	var htmleltables = document.getElementById("tables");
 	for (opi in dataOperations){
-		//htmleltables
 		var op = dataOperations[opi];
+		
+		if (op.input){
+			var elPair = splitType(op.input);
+			console.log(elPair);
+		}
+		if (op.output){
+			var elPair = splitType(op.input);
+		}
+	}
+}
+
+function draw(){
+	for (opi in dataOperations){
+		var op = dataOperations[opi];
+		var tempOpDiv = d3.select("#tables").append("div").attr("id","op_"+op.name);
+		tempOpDiv.append("p").text(op.name);
 		console.log(dataOperations[opi]);
+		if (op.input){
+			var tempOpInDiv = tempOpDiv.append("div").attr("id","input_"+op.name);
+			tempOpInDiv.append("p").text("Request "+op.input);
+			tempOpInDiv.append("table").attr("id","table_input_"+op.name);
+		}
+		if (op.output){
+			var tempOpOutDiv = tempOpDiv.append("div").attr("id","output_"+op.name);
+			tempOpOutDiv.append("p").text("Response "+op.output);
+			tempOpOutDiv.append("table").attr("id","table_output_"+op.name);
+		}
+		
 	}
 	
 }
