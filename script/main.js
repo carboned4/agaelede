@@ -167,11 +167,22 @@ function traverse(){
 		var op = dataOperations[opi];
 		
 		if (op.input){
-			var elPair = splitType(op.input);
-			console.log(elPair);
+			var elMessageName = splitType(op.input)[1];
+			var elMessage = dataMessages[elMessageName];
+			var elPair = splitType(elMessage.part);
+			var elPairNS = dataNamespacesTop.external[elPair[0]];
+			var elPairName = elPair[1];
+			var topEl = dataElements[elPairNS][elPairName];
+			console.log(topEl);
 		}
 		if (op.output){
-			var elPair = splitType(op.input);
+			var elMessageName = splitType(op.output)[1];
+			var elMessage = dataMessages[elMessageName];
+			var elPair = splitType(elMessage.part);
+			var elPairNS = dataNamespacesTop.external[elPair[0]];
+			var elPairName = elPair[1];
+			var topEl = dataElements[elPairNS][elPairName];
+			console.log(topEl);
 		}
 	}
 }
@@ -181,7 +192,7 @@ function draw(){
 		var op = dataOperations[opi];
 		var tempOpDiv = d3.select("#tables").append("div").attr("id","op_"+op.name);
 		tempOpDiv.append("p").text(op.name);
-		console.log(dataOperations[opi]);
+		//console.log(dataOperations[opi]);
 		if (op.input){
 			var tempOpInDiv = tempOpDiv.append("div").attr("id","input_"+op.name);
 			tempOpInDiv.append("p").text("Request "+op.input);
