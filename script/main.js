@@ -167,6 +167,9 @@ function traverse(){
 		var op = dataOperations[opi];
 		
 		if (op.input){
+			var lines = [];
+			var level = 0;
+			var maxlevel = level+1;
 			var elMessageName = splitType(op.input)[1];
 			var elMessage = dataMessages[elMessageName];
 			var elPair = splitType(elMessage.part);
@@ -174,6 +177,8 @@ function traverse(){
 			var elPairName = elPair[1];
 			var topEl = dataElements[elPairNS][elPairName];
 			console.log(topEl);
+			lines.push([level,elPairName,"1..1",topEl.type,""]);
+			traverseNode(level+1,dataTypes[topEl.ns][topEl.type]);
 		}
 		if (op.output){
 			var elMessageName = splitType(op.output)[1];
@@ -185,6 +190,15 @@ function traverse(){
 			console.log(topEl);
 		}
 	}
+}
+
+function traverseNode(level, node){
+		if(node.type){
+			console.log(node.type);
+		} else if (node.structure){
+			console.log(node.structure);
+		}
+	return;
 }
 
 function draw(){
