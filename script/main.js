@@ -176,9 +176,12 @@ function traverse(){
 			var elPairNS = dataNamespacesTop.external[elPair[0]];
 			var elPairName = elPair[1];
 			var topEl = dataElements[elPairNS][elPairName];
-			console.log(topEl);
+			//console.log(topEl);
 			lines.push([level,elPairName,"1..1",topEl.type,""]);
-			traverseNode(level+1,dataTypes[topEl.ns][topEl.type]);
+			var subelstruct = dataTypes[topEl.ns][topEl.type];
+			for (subel in subelstruct){
+				traverseNode(level+1,subelstruct[subel]);
+			}
 		}
 		if (op.output){
 			var elMessageName = splitType(op.output)[1];
@@ -193,11 +196,12 @@ function traverse(){
 }
 
 function traverseNode(level, node){
-		if(node.type){
-			console.log(node.type);
-		} else if (node.structure){
-			console.log(node.structure);
-		}
+	console.log(node);
+	if(node.type){
+		console.log(node.type);
+	} else if (node.structure){
+		console.log(node.structure);
+	}
 	return;
 }
 
